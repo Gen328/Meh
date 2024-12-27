@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инвентаризация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Форма Инвентаризации</h1>
+    <form id="inventoryForm">
+        <label for="room">Комната</label>
+        <input type="text" id="room" name="room" required>
+
+        <label for="item">Инвентарь</label>
+        <select id="item" name="item" required>
+            <option value="кровать">Кровать</option>
+            <option value="матрас">Матрас</option>
+            <option value="тумба">Тумба</option>
+            <option value="шкаф">Шкаф</option>
+            <option value="стол">Стол</option>
+            <option value="стул">Стул</option>
+        </select>
+
+        <label for="itemNumber">Номер инвентаря</label>
+        <input type="text" id="itemNumber" name="itemNumber" required>
+
+        <label for="gridNumber">Номер сетки</label>
+        <input type="text" id="gridNumber" name="gridNumber" required>
+
+        <label for="status">Состояние</label>
+        <select id="status" name="status" required>
+            <option value="нормально">Нормально</option>
+            <option value="замена">Замена</option>
+        </select>
+
+        <label for="date">Дата</label>
+        <input type="date" id="date" name="date" required>
+
+        <button type="button" onclick="submitForm()">Отправить</button>
+    </form>
+
+    <script>
+        async function submitForm() {
+            const form = document.getElementById('inventoryForm');
+            const formData = new FormData(form);
+
+            // Преобразуем данные формы в объект
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Отправка данных на Google Apps Script
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbx7TADix_eJVu4vncuMdbysmon78GK-pyfZNZ5ZtRhDpl1agQK4FQO6SQcD6Mw_dWJR/exec';
+            try {
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const result = await response.json();
+                alert(result.message || 'Данные успешно отправлены!');
+                form.reset();
+            } catch (error) {
+                alert('Ошибка при отправке данных: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
